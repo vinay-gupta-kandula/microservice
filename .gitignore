@@ -1,0 +1,26 @@
+# ==========================================
+# Step 11: Git Ignore Rules for 2FA Project
+# ==========================================
+
+# Encrypted seed file (DO NOT COMMIT)
+encrypted_seed.txt
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environment folders
+venv/
+.env/
+env/
+.venv/
+
+# IDE/editor settings
+.vscode/
+.idea/
+*.swp
+
+# OS generated files
+.DS_Store
+Thumbs.db
