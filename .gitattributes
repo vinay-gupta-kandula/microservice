@@ -1,1 +1,6 @@
-cron/2fa-cron text eol=lf
+# enforce LF for shell scripts, cron, Dockerfile and python scripts used at runtime
+/start.sh text eol=lf
+/cron/2fa-cron text eol=lf
+/Dockerfile text eol=lf
+/scripts/* text eol=lf
+*.py text eol=lf
