@@ -1,7 +1,7 @@
-#!/usr/bin/env sh
-set -e
+# ensure executable
+chmod +x start.sh
 
-export TZ=UTC
-
-# Start FastAPI app
-exec uvicorn app:app --host 0.0.0.0 --port 8080
+# add & commit (only if files changed)
+git add start.sh cron/2fa-cron Dockerfile docker-compose.yml
+git commit -m "Fix line endings, ensure start.sh executable, update cron path" || echo "no changes to commit"
+git push origin main || echo "push failed - check network/auth"
