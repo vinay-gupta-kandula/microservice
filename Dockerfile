@@ -4,16 +4,14 @@ ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-# Install build tools and python deps globally
+# Install Python dependencies ONLY
 COPY requirements.txt /app/requirements.txt
-RUN apt-get update && apt-get install -y --no-install-recommends build-essential gcc \
-    && pip install --upgrade pip \
-    && pip install --no-cache-dir -r /app/requirements.txt \
-    && apt-get purge -y --auto-remove build-essential gcc \
-    && rm -rf /var/lib/apt/lists/*
+RUN pip install --upgrade pip \
+    && pip install --no-cache-dir -r /app/requirements.txt
 
 # Copy application source
 COPY . /app
+
 
 # ---------- Stage 2: Runtime ----------
 FROM python:3.11-slim AS runtime
@@ -30,23 +28,23 @@ RUN apt-get update && \
 # Configure timezone to UTC
 RUN ln -sf /usr/share/zoneinfo/UTC /etc/localtime && echo "UTC" > /etc/timezone
 
-# Copy python installation (site-packages, scripts) from builder
+# Copy Python environment from builder
 COPY --from=builder /usr/local /usr/local
 
-# Copy application code (includes cron/, scripts/, keys, etc.)
+# Copy application code
 COPY --from=builder /app /app
 
 # Install cron job
-RUN chmod 0644 /app/cron/2fa-cron || true && crontab /app/cron/2fa-cron || true
+RUN chmod 0644 /app/cron/2fa-cron && crontab /app/cron/2fa-cron
 
 # Create persistent mount points
 RUN mkdir -p /data /cron && chmod 0755 /data /cron
 VOLUME ["/data", "/cron"]
 
-# Make sure start.sh is executable
-RUN chmod +x /app/start.sh || true
+# Ensure startup script is executable
+RUN chmod +x /app/start.sh
 
 EXPOSE 8080
 
-# Start cron and the app server
+# Start cron + API
 CMD ["./start.sh"]
