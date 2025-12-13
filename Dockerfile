@@ -49,4 +49,4 @@ RUN chmod +x /app/start.sh || true
 EXPOSE 8080
 
 # Start cron and the app server
-CMD ["sh", "-c", "cron || true; sleep 1; ./start.sh"]
+CMD ["./start.sh"]
